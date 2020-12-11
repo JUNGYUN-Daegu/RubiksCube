@@ -7,4 +7,6 @@
 
 import Foundation
 
-print(thrustLetters() ?? "")
+//print(thrustLetters() ?? "")
+var planeCube = TwoDimensionalCube()
+planeCube.gameIteration()
