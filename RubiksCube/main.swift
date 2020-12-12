@@ -7,6 +7,12 @@
 
 import Foundation
 
+//MARK:- STEP 1
 //print(thrustLetters() ?? "")
-var planeCube = TwoDimensionalCube()
-planeCube.gameIteration()
+
+//MARK:- STEP 2
+//var planeCube = TwoDimensionalCube()
+//planeCube.gameIteration()
+
+//MARK:- STEP 3
+
