@@ -59,7 +59,8 @@ struct RubiksCube {
         resultArray[2][1] = selectedSide[1][0]
         resultArray[1][1] = selectedSide[1][1]
         for row in 0...2 {
-            resultArray[row][0] = temp[row]
+            print(row)
+            resultArray[row][0] = temp.reversed()[row]
         }
         return resultArray
     }
@@ -83,10 +84,26 @@ struct RubiksCube {
     }
     
     mutating func handleInstruction(with userInput: String) {
-        for letter in userInput {
-                print(letter)
-                manipulateCube(instruction: String(letter))
+        let inputArray: Array<String> = userInput.map { (char) -> String in
+            String(char)
+        }
+        let lastIndexofInputArray = inputArray.count - 1
+        for (index, value) in inputArray.enumerated() {
+            var validValue: String = ""
+            if inputArray[index] == "'" {
+                continue
+            } else if index != lastIndexofInputArray && inputArray[index + 1] == "'" {
+                    validValue = "\(value)'"
+                    manipulateCube(instruction: String(validValue))
+                    print(validValue)
+                    cubeOut()
+                
+            } else {
+                validValue = "\(value)"
+                manipulateCube(instruction: String(validValue))
+                print(validValue)
                 cubeOut()
+            }
         }
     }
     
