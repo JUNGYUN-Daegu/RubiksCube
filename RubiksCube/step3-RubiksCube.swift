@@ -33,4 +33,21 @@ struct RubiksCube {
             print("\(padding)\(padding)\(padding)\(row.joined(separator: " "))")
         }
     }
+  
+    mutating func gameIteration() {
+        repeat{
+            print("CUBE>", terminator: " ")
+            guard let userInput = readLine() else {
+                print("user input not found")
+                return
+            }
+            if userInput == "Q" {
+                print("Bye~")
+                break
+            } else {
+                cubeOut()
+            }
+        } while true
+    }
+    
 }

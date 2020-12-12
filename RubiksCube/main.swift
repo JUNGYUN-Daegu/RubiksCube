@@ -15,5 +15,5 @@ import Foundation
 //planeCube.gameIteration()
 
 //MARK:- STEP 3
-let rubiksCube = RubiksCube()
-rubiksCube.cubeOut()
+var rubiksCube = RubiksCube()
+rubiksCube.gameIteration()
