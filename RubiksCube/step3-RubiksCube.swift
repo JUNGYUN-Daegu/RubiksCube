@@ -9,7 +9,7 @@ import Foundation
 
 //MARK:- STEP 3: RUBIK'S CUBE
 struct RubiksCube {
-    var upperSide: Array<Array<String>> = [["B","B","B"], ["B","B","B"],["B","B","B"]]
+    var upperSide: Array<Array<String>> = [["a","b","c"], ["h","B","d"],["g","f","e"]]
     var frontSide: Array<Array<String>> = [["W","W","W"], ["W","W","W"],["W","W","W"]]
     var rightSide: Array<Array<String>> = [["O","O","O"], ["O","O","O"],["O","O","O"]]
     var backSide: Array<Array<String>> = [["G","G","G"], ["G","G","G"],["G","G","G"]]
@@ -34,9 +34,37 @@ struct RubiksCube {
         }
     }
    
+    mutating func manipulateCube(instruction: String) {
+        switch instruction {
+        case "U": do {
+            // rotating the selected side 90 degree clockwise
+            let temp = upperSide[0]
+            upperSide[0][1] = upperSide[1][0]
+            upperSide[0][0] = upperSide[2][0]
+            upperSide[1][0] = upperSide[2][1]
+            upperSide[2][0] = upperSide[2][2]
+            upperSide[2][1] = upperSide[1][2]
+            for row in 0...2 {
+                upperSide[row][2] = temp[row]
+            }
+            // manipulating surrounding sides
+            let temp2 = frontSide[0]
+            frontSide[0] = rightSide[0]
+            rightSide[0] = backSide[0]
+            backSide[0] = leftSide[0]
+            leftSide[0] = temp2
+        }
+        case "U'": do {
+            // rotating the selected side 90 degree anti-clockwise
+        }
+        default: return
+        }
+    }
+    
     mutating func handleInstruction(with userInput: String) {
         for letter in userInput {
                 print(letter)
+                cubeManipulation(instruction: String(letter))
                 cubeOut()
         }
     }

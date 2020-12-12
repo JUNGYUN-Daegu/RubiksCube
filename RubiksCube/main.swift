@@ -16,4 +16,5 @@ import Foundation
 
 //MARK:- STEP 3
 var rubiksCube = RubiksCube()
+rubiksCube.cubeOut()
 rubiksCube.gameIteration()
