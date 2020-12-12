@@ -33,20 +33,41 @@ struct RubiksCube {
             print("\(padding)\(padding)\(padding)\(row.joined(separator: " "))")
         }
     }
-   
+    func rotate90Degree(with selectedSide: Array<Array<String>>) -> Array<Array<String>> {
+        // rotating the selected side 90 degree clockwise
+        var resultArray: Array<Array<String>> = [["","",""],["","",""],["","",""]]
+        let temp = selectedSide[0]
+        resultArray[0][1] = selectedSide[1][0]
+        resultArray[0][0] = selectedSide[2][0]
+        resultArray[1][0] = selectedSide[2][1]
+        resultArray[2][0] = selectedSide[2][2]
+        resultArray[2][1] = selectedSide[1][2]
+        resultArray[1][1] = selectedSide[1][1]
+        for row in 0...2 {
+            resultArray[row][2] = temp[row]
+        }
+        return resultArray
+    }
+    func rotateMinus90Degree(with selectedSide: Array<Array<String>>) -> Array<Array<String>> {
+        // rotating the selected side 90 degree anti-clockwise
+        var resultArray: Array<Array<String>> = [["","",""],["","",""],["","",""]]
+        let temp = selectedSide[0]
+        resultArray[0][1] = selectedSide[1][2]
+        resultArray[0][2] = selectedSide[2][2]
+        resultArray[1][2] = selectedSide[2][1]
+        resultArray[2][2] = selectedSide[2][0]
+        resultArray[2][1] = selectedSide[1][0]
+        resultArray[1][1] = selectedSide[1][1]
+        for row in 0...2 {
+            resultArray[row][0] = temp[row]
+        }
+        return resultArray
+    }
+    
     mutating func manipulateCube(instruction: String) {
         switch instruction {
         case "U": do {
-            // rotating the selected side 90 degree clockwise
-            let temp = upperSide[0]
-            upperSide[0][1] = upperSide[1][0]
-            upperSide[0][0] = upperSide[2][0]
-            upperSide[1][0] = upperSide[2][1]
-            upperSide[2][0] = upperSide[2][2]
-            upperSide[2][1] = upperSide[1][2]
-            for row in 0...2 {
-                upperSide[row][2] = temp[row]
-            }
+            upperSide = rotate90Degree(with: upperSide)
             // manipulating surrounding sides
             let temp2 = frontSide[0]
             frontSide[0] = rightSide[0]
@@ -55,7 +76,7 @@ struct RubiksCube {
             leftSide[0] = temp2
         }
         case "U'": do {
-            // rotating the selected side 90 degree anti-clockwise
+            upperSide = rotateMinus90Degree(with: upperSide)
         }
         default: return
         }
@@ -64,7 +85,7 @@ struct RubiksCube {
     mutating func handleInstruction(with userInput: String) {
         for letter in userInput {
                 print(letter)
-                cubeManipulation(instruction: String(letter))
+                manipulateCube(instruction: String(letter))
                 cubeOut()
         }
     }

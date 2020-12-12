@@ -11,10 +11,10 @@ import Foundation
 //print(thrustLetters() ?? "")
 
 //MARK:- STEP 2
-//var planeCube = TwoDimensionalCube()
-//planeCube.gameIteration()
+var planeCube = TwoDimensionalCube()
+planeCube.gameIteration()
 
 //MARK:- STEP 3
-var rubiksCube = RubiksCube()
-rubiksCube.cubeOut()
-rubiksCube.gameIteration()
+//var rubiksCube = RubiksCube()
+//rubiksCube.cubeOut()
+//rubiksCube.gameIteration()
