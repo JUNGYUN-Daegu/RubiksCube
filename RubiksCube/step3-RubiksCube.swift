@@ -65,16 +65,57 @@ struct RubiksCube {
         return resultArray
     }
     
+    func manipulateSurroundingSides90Degree(firstContiguousSide: Array<Array<String>>,
+                                    secondContiguousSide: Array<Array<String>>,
+                                    thirdContiguousSide: Array<Array<String>>,
+                                    fourthContiguousSide: Array<Array<String>>)
+    ->
+    (Array<Array<String>>,
+     Array<Array<String>>,
+     Array<Array<String>>,
+     Array<Array<String>>){
+        var firstSide = firstContiguousSide
+        var secondSide = secondContiguousSide
+        var thirdSide = thirdContiguousSide
+        var fourthSide = fourthContiguousSide
+        
+        // 선택 사이드기준으로 밑 그 오른쪽 순서로 사이드 순환
+        let temp: Array<String> = firstSide[0]
+        //secondSide is the side at the right from firstSide
+        firstSide[0] = secondSide[0]
+        secondSide[0] = thirdSide[0]
+        thirdSide[0] = fourthSide[0]
+        fourthSide[0] = temp
+        
+        return (firstSide, secondSide, thirdSide, fourthSide)
+    }
+    
+    func manipulateSurroundingSidesMinus90Degree(firstContiguousSide: Array<Array<String>>,
+                                    secondContiguousSide: Array<Array<String>>,
+                                    thirdContiguousSide: Array<Array<String>>,
+                                    fourthContiguousSide: Array<Array<String>>)
+    ->
+    (Array<Array<String>>,
+     Array<Array<String>>,
+     Array<Array<String>>,
+     Array<Array<String>>){
+        var firstSide = firstContiguousSide
+        var secondSide = secondContiguousSide
+        var thirdSide = thirdContiguousSide
+        var fourthSide = fourthContiguousSide
+        
+        return (firstSide, secondSide, thirdSide, fourthSide)
+    }
+    
     mutating func manipulateCube(instruction: String) {
         switch instruction {
         case "U": do {
             upperSide = rotate90Degree(with: upperSide)
-            // manipulating surrounding sides
-            let temp2 = frontSide[0]
-            frontSide[0] = rightSide[0]
-            rightSide[0] = backSide[0]
-            backSide[0] = leftSide[0]
-            leftSide[0] = temp2
+            let rotatedSurroundingSides = manipulateSurroundingSides90Degree(firstContiguousSide: frontSide, secondContiguousSide: rightSide, thirdContiguousSide: backSide, fourthContiguousSide: leftSide)
+            frontSide = rotatedSurroundingSides.0
+            rightSide = rotatedSurroundingSides.1
+            backSide = rotatedSurroundingSides.2
+            leftSide = rotatedSurroundingSides.3
         }
         case "U'": do {
             upperSide = rotateMinus90Degree(with: upperSide)
