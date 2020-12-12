@@ -33,7 +33,14 @@ struct RubiksCube {
             print("\(padding)\(padding)\(padding)\(row.joined(separator: " "))")
         }
     }
-  
+   
+    mutating func handleInstruction(with userInput: String) {
+        for letter in userInput {
+                print(letter)
+                cubeOut()
+        }
+    }
+    
     mutating func gameIteration() {
         repeat{
             print("CUBE>", terminator: " ")
@@ -45,9 +52,8 @@ struct RubiksCube {
                 print("Bye~")
                 break
             } else {
-                cubeOut()
+                handleInstruction(with: userInput)
             }
         } while true
     }
-    
 }
