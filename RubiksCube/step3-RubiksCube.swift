@@ -16,6 +16,7 @@ struct RubiksCube {
     var leftSide: Array<Array<String>> = [["Y","Y","Y"], ["Y","Y","Y"],["Y","Y","Y"]]
     var bottomSide: Array<Array<String>> = [["R","R","R"], ["R","R","R"],["R","R","R"]]
     
+    //MARK:= CUBE OUT
     func cubeOut() {
         let padding: String = "     "
         for row in upperSide {
@@ -33,6 +34,8 @@ struct RubiksCube {
             print("\(padding)\(padding)\(padding)\(row.joined(separator: " "))")
         }
     }
+    
+    //MARK:- MANIPULATING CUBE FUNCTIONS
     func rotate90Degree(with selectedSide: Array<Array<String>>) -> Array<Array<String>> {
         // rotating the selected side 90 degree clockwise
         var resultArray: Array<Array<String>> = [["","",""],["","",""],["","",""]]
@@ -48,6 +51,7 @@ struct RubiksCube {
         }
         return resultArray
     }
+    
     func rotateMinus90Degree(with selectedSide: Array<Array<String>>) -> Array<Array<String>> {
         // rotating the selected side 90 degree anti-clockwise
         var resultArray: Array<Array<String>> = [["","",""],["","",""],["","",""]]
@@ -65,7 +69,7 @@ struct RubiksCube {
     }
     
     //U, U' Pressed
-    mutating func firstRowRotation(with instruction: String) {
+    mutating func firstRowsRotationWhenUPressed(with instruction: String) {
         // rotating -90 degree
         if instruction.contains("'") {
             let temp = frontSide[0]
@@ -82,8 +86,9 @@ struct RubiksCube {
             leftSide[0] = temp
         }
     }
+    
     //D, D' pressed
-    mutating func lastRowRotation(with instruction: String) {
+    mutating func lastRowsRotationWhenDPressed(with instruction: String) {
         // rotating -90 degree
         if instruction.contains("'") {
             let temp = frontSide[2]
@@ -100,11 +105,25 @@ struct RubiksCube {
             leftSide[2] = temp
         }
     }
-    func firstElementOfEachRow(inputArray: Array<Array<String>>) -> Array<String> {
+    
+    // extracting needed elements from a selected side
+    func firstElementOfEachRow(selectedSide: Array<Array<String>>) -> Array<String> {
         var temp: Array<String> {
             var tempArray: Array<String> = []
-            for row in inputArray {
+            for row in selectedSide {
                 tempArray.append(row[0])
+            }
+            return tempArray
+        }
+        print(temp)
+        return temp
+    }
+    
+    func lastElementOfEachRow(selectedSide: Array<Array<String>>) -> Array<String> {
+        var temp: Array<String> {
+            var tempArray: Array<String> = []
+            for row in selectedSide {
+                tempArray.append(row[2])
             }
             return tempArray
         }
@@ -114,10 +133,10 @@ struct RubiksCube {
 
     // L, L' pressed
     mutating func columnRotationWhenLPressed(with instruction: String) {
-        let column_upperSide = firstElementOfEachRow(inputArray: upperSide)
-        let column_backSide = firstElementOfEachRow(inputArray: backSide)
-        let column_bottomSide = firstElementOfEachRow(inputArray: bottomSide)
-        let column_frontSide = firstElementOfEachRow(inputArray: frontSide)
+        let column_upperSide = firstElementOfEachRow(selectedSide: upperSide)
+        let column_backSide = firstElementOfEachRow(selectedSide: backSide)
+        let column_bottomSide = firstElementOfEachRow(selectedSide: bottomSide)
+        let column_frontSide = firstElementOfEachRow(selectedSide: frontSide)
         
         if instruction.contains("'") {
             for row in 0...2 {
@@ -135,24 +154,13 @@ struct RubiksCube {
             }
         }
     }
-    func lastElementOfEachRow(inputArray: Array<Array<String>>) -> Array<String> {
-        var temp: Array<String> {
-            var tempArray: Array<String> = []
-            for row in inputArray {
-                tempArray.append(row[2])
-            }
-            return tempArray
-        }
-        print(temp)
-        return temp
-    }
     
     // R, R' pressed
     mutating func columnRotationWhenRPressed(with instruction: String) {
-        let column_upperSide = lastElementOfEachRow(inputArray: upperSide)
-        let column_backSide = lastElementOfEachRow(inputArray: backSide)
-        let column_bottomSide = lastElementOfEachRow(inputArray: bottomSide)
-        let column_frontSide = lastElementOfEachRow(inputArray: frontSide)
+        let column_upperSide = lastElementOfEachRow(selectedSide: upperSide)
+        let column_backSide = lastElementOfEachRow(selectedSide: backSide)
+        let column_bottomSide = lastElementOfEachRow(selectedSide: bottomSide)
+        let column_frontSide = lastElementOfEachRow(selectedSide: frontSide)
         
         if instruction.contains("'") {
             for row in 0...2 {
@@ -174,9 +182,9 @@ struct RubiksCube {
     // F, F' Pressed
     mutating func rotationWhenFPressed(with instruction: String) {
         let row_upperSide = upperSide[2]
-        let column_rightSide = firstElementOfEachRow(inputArray: rightSide)
+        let column_rightSide = firstElementOfEachRow(selectedSide: rightSide)
         let row_bottomSide = bottomSide[0]
-        let column_leftSide = lastElementOfEachRow(inputArray: leftSide)
+        let column_leftSide = lastElementOfEachRow(selectedSide: leftSide)
         
         if instruction.contains("'") {
             for row in 0...2 {
@@ -198,9 +206,9 @@ struct RubiksCube {
     // B, B' pressed
     mutating func rotationWhenBPressed(with instruction: String) {
         let row_upperSide = upperSide[0]
-        let column_rightSide = lastElementOfEachRow(inputArray: rightSide)
+        let column_rightSide = lastElementOfEachRow(selectedSide: rightSide)
         let row_bottomSide = bottomSide[2]
-        let column_leftSide = firstElementOfEachRow(inputArray: leftSide)
+        let column_leftSide = firstElementOfEachRow(selectedSide: leftSide)
         
         if instruction.contains("'") {
             for row in 0...2 {
@@ -223,16 +231,16 @@ struct RubiksCube {
         switch instruction {
         case "U": do {
             upperSide = rotate90Degree(with: upperSide)
-            firstRowRotation(with: instruction)
+            firstRowsRotationWhenUPressed(with: instruction)
         } case "U'": do {
             upperSide = rotateMinus90Degree(with: upperSide)
-            firstRowRotation(with: instruction)
+            firstRowsRotationWhenUPressed(with: instruction)
         } case "D": do {
             bottomSide = rotate90Degree(with: bottomSide)
-            lastRowRotation(with: instruction)
+            lastRowsRotationWhenDPressed(with: instruction)
         } case "D'": do {
             bottomSide = rotateMinus90Degree(with: bottomSide)
-            lastRowRotation(with: instruction)
+            lastRowsRotationWhenDPressed(with: instruction)
         } case "L": do {
             leftSide = rotate90Degree(with: leftSide)
             columnRotationWhenLPressed(with: instruction)
@@ -261,6 +269,7 @@ struct RubiksCube {
         }
     }
     
+    //MARK:- GAME PLAY FUNCTIONS
     mutating func handleInstruction(with userInput: String) {
         let inputArray: Array<String> = userInput.map { (char) -> String in
             String(char)
