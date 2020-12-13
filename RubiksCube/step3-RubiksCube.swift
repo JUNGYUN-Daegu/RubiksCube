@@ -9,12 +9,12 @@ import Foundation
 
 //MARK:- STEP 3: RUBIK'S CUBE
 struct RubiksCube {
-    var upperSide: Array<Array<String>> = [["a","b","c"], ["h","B","d"],["g","f","e"]]
+    var upperSide: Array<Array<String>> = [["B","B","B"], ["B","B","B"],["B","B","B"]]
     var frontSide: Array<Array<String>> = [["W","W","W"], ["W","W","W"],["W","W","W"]]
     var rightSide: Array<Array<String>> = [["O","O","O"], ["O","O","O"],["O","O","O"]]
     var backSide: Array<Array<String>> = [["G","G","G"], ["G","G","G"],["G","G","G"]]
     var leftSide: Array<Array<String>> = [["Y","Y","Y"], ["Y","Y","Y"],["Y","Y","Y"]]
-    var bottomSide: Array<Array<String>> = [["a","b","c"], ["h","R","d"],["g","f","e"]]
+    var bottomSide: Array<Array<String>> = [["R","R","R"], ["R","R","R"],["R","R","R"]]
     
     func cubeOut() {
         let padding: String = "     "
@@ -82,7 +82,7 @@ struct RubiksCube {
             leftSide[0] = temp
         }
     }
-    //B, B' pressed
+    //D, D' pressed
     mutating func lastRowRotation(with instruction: String) {
         // rotating -90 degree
         if instruction.contains("'") {
@@ -171,6 +171,54 @@ struct RubiksCube {
         }
     }
     
+    // F, F' Pressed
+    mutating func rotationWhenFPressed(with instruction: String) {
+        let row_upperSide = upperSide[2]
+        let column_rightSide = firstElementOfEachRow(inputArray: rightSide)
+        let row_bottomSide = bottomSide[0]
+        let column_leftSide = lastElementOfEachRow(inputArray: leftSide)
+        
+        if instruction.contains("'") {
+            for row in 0...2 {
+                upperSide[2] = column_rightSide
+                rightSide[row][0] = row_bottomSide.reversed()[row]
+                bottomSide[0] = column_leftSide
+                leftSide[row][2] = row_upperSide.reversed()[row]
+            }
+        } else {
+            for row in 0...2 {
+                upperSide[2] = column_leftSide
+                leftSide[row][2] = row_bottomSide[row]
+                bottomSide[0] = column_rightSide.reversed()
+                rightSide[row][0] = row_upperSide[row]
+            }
+        }
+    }
+    
+    // B, B' pressed
+    mutating func rotationWhenBPressed(with instruction: String) {
+        let row_upperSide = upperSide[0]
+        let column_rightSide = lastElementOfEachRow(inputArray: rightSide)
+        let row_bottomSide = bottomSide[2]
+        let column_leftSide = firstElementOfEachRow(inputArray: leftSide)
+        
+        if instruction.contains("'") {
+            for row in 0...2 {
+                upperSide[0] = column_leftSide.reversed()
+                leftSide[row][0] = row_bottomSide[row]
+                bottomSide[2] = column_rightSide.reversed()
+                rightSide[row][2] = row_upperSide[row]
+            }
+        } else {
+            for row in 0...2 {
+                upperSide[0] = column_rightSide
+                rightSide[row][2] = row_bottomSide.reversed()[row]
+                bottomSide[2] = column_leftSide
+                leftSide[row][0] = row_upperSide.reversed()[row]
+            }
+        }
+    }
+    
     mutating func manipulateCube(with instruction: String) {
         switch instruction {
         case "U": do {
@@ -179,10 +227,10 @@ struct RubiksCube {
         } case "U'": do {
             upperSide = rotateMinus90Degree(with: upperSide)
             firstRowRotation(with: instruction)
-        } case "B": do {
+        } case "D": do {
             bottomSide = rotate90Degree(with: bottomSide)
             lastRowRotation(with: instruction)
-        } case "B'": do {
+        } case "D'": do {
             bottomSide = rotateMinus90Degree(with: bottomSide)
             lastRowRotation(with: instruction)
         } case "L": do {
@@ -199,11 +247,17 @@ struct RubiksCube {
             columnRotationWhenRPressed(with: instruction)
         } case "F": do {
             frontSide = rotate90Degree(with: frontSide)
+            rotationWhenFPressed(with: instruction)
         } case "F'": do {
             frontSide = rotateMinus90Degree(with: frontSide)
-        }
-        
-        default: return
+            rotationWhenFPressed(with: instruction)
+        } case "B": do {
+            backSide = rotate90Degree(with: backSide)
+            rotationWhenBPressed(with: instruction)
+        } case "B'": do {
+            backSide = rotateMinus90Degree(with: backSide)
+            rotationWhenBPressed(with: instruction)
+        } default: return
         }
     }
     
