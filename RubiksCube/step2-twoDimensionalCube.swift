@@ -11,7 +11,7 @@ import Foundation
 struct TwoDimensionalCube {
     var cube: Array<Array<String>> = [["R", "R", "W"], ["G","C","W"], ["G","B","B"]]
     
-    mutating func cubeManipulation(with input: String) {
+    mutating func manipulateCube(with input: String) {
         switch input {
         case "U": do {
             let temp = cube[0].removeFirst()
@@ -68,14 +68,28 @@ struct TwoDimensionalCube {
         print(result)
     }
     
-    mutating func gamePlay(with userInput: String) {
-        for letter in userInput {
-                print(letter)
-                cubeManipulation(with: String(letter))
+    mutating func handleInstruction(with userInput: String) {
+        let inputArray: Array<String> = userInput.map { (char) -> String in
+            String(char)
+        }
+        let lastIndexofInputArray = inputArray.count - 1
+        for (index, value) in inputArray.enumerated() {
+            var validValue: String = ""
+            if inputArray[index] == "'" {
+                continue
+            } else if index != lastIndexofInputArray && inputArray[index + 1] == "'" {
+                    validValue = "\(value)'"
+                    manipulateCube(with: String(validValue))
+                    print(validValue)
+                    cubeOut()
+            } else {
+                validValue = "\(value)"
+                manipulateCube(with: String(validValue))
+                print(validValue)
                 cubeOut()
+            }
         }
     }
-    
     mutating func gameIteration() {
         repeat{
             print("CUBE>", terminator: " ")
@@ -87,7 +101,7 @@ struct TwoDimensionalCube {
                 print("Bye~")
                 break
             } else {
-                gamePlay(with: userInput)
+                handleInstruction(with: userInput)
             }
         } while true
     }
