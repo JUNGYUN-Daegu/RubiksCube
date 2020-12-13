@@ -14,7 +14,7 @@ struct RubiksCube {
     var rightSide: Array<Array<String>> = [["O","O","O"], ["O","O","O"],["O","O","O"]]
     var backSide: Array<Array<String>> = [["G","G","G"], ["G","G","G"],["G","G","G"]]
     var leftSide: Array<Array<String>> = [["Y","Y","Y"], ["Y","Y","Y"],["Y","Y","Y"]]
-    var bottomSide: Array<Array<String>> = [["R","R","R"], ["R","R","R"],["R","R","R"]]
+    var bottomSide: Array<Array<String>> = [["a","b","c"], ["h","R","d"],["g","f","e"]]
     
     func cubeOut() {
         let padding: String = "     "
@@ -59,67 +59,150 @@ struct RubiksCube {
         resultArray[2][1] = selectedSide[1][0]
         resultArray[1][1] = selectedSide[1][1]
         for row in 0...2 {
-            print(row)
             resultArray[row][0] = temp.reversed()[row]
         }
         return resultArray
     }
     
-    func manipulateSurroundingSides90Degree(firstContiguousSide: Array<Array<String>>,
-                                    secondContiguousSide: Array<Array<String>>,
-                                    thirdContiguousSide: Array<Array<String>>,
-                                    fourthContiguousSide: Array<Array<String>>)
-    ->
-    (Array<Array<String>>,
-     Array<Array<String>>,
-     Array<Array<String>>,
-     Array<Array<String>>){
-        var firstSide = firstContiguousSide
-        var secondSide = secondContiguousSide
-        var thirdSide = thirdContiguousSide
-        var fourthSide = fourthContiguousSide
+    //U, U' Pressed
+    mutating func firstRowRotation(with instruction: String) {
+        // rotating -90 degree
+        if instruction.contains("'") {
+            let temp = frontSide[0]
+            frontSide[0] = leftSide[0]
+            leftSide[0] = backSide[0]
+            backSide[0] = rightSide[0]
+            rightSide[0] = temp
+        // rotating 90 degree
+        } else {
+            let temp = frontSide[0]
+            frontSide[0] = rightSide[0]
+            rightSide[0] = backSide[0]
+            backSide[0] = leftSide[0]
+            leftSide[0] = temp
+        }
+    }
+    //B, B' pressed
+    mutating func lastRowRotation(with instruction: String) {
+        // rotating -90 degree
+        if instruction.contains("'") {
+            let temp = frontSide[2]
+            frontSide[2] = leftSide[2]
+            leftSide[2] = backSide[2]
+            backSide[2] = rightSide[2]
+            rightSide[2] = temp
+        // rotating 90 degree
+        } else {
+            let temp = frontSide[2]
+            frontSide[2] = rightSide[2]
+            rightSide[2] = backSide[2]
+            backSide[2] = leftSide[2]
+            leftSide[2] = temp
+        }
+    }
+    func firstElementOfEachRow(inputArray: Array<Array<String>>) -> Array<String> {
+        var temp: Array<String> {
+            var tempArray: Array<String> = []
+            for row in inputArray {
+                tempArray.append(row[0])
+            }
+            return tempArray
+        }
+        print(temp)
+        return temp
+    }
+
+    // L, L' pressed
+    mutating func columnRotationWhenLPressed(with instruction: String) {
+        let column_upperSide = firstElementOfEachRow(inputArray: upperSide)
+        let column_backSide = firstElementOfEachRow(inputArray: backSide)
+        let column_bottomSide = firstElementOfEachRow(inputArray: bottomSide)
+        let column_frontSide = firstElementOfEachRow(inputArray: frontSide)
         
-        // 선택 사이드기준으로 밑 그 오른쪽 순서로 사이드 순환
-        let temp: Array<String> = firstSide[0]
-        //secondSide is the side at the right from firstSide
-        firstSide[0] = secondSide[0]
-        secondSide[0] = thirdSide[0]
-        thirdSide[0] = fourthSide[0]
-        fourthSide[0] = temp
-        
-        return (firstSide, secondSide, thirdSide, fourthSide)
+        if instruction.contains("'") {
+            for row in 0...2 {
+                upperSide[row][0] = column_frontSide[row]
+                frontSide[row][0] = column_bottomSide[row]
+                bottomSide[row][0] = column_backSide.reversed()[row]
+                backSide[row][0] = column_upperSide.reversed()[row]
+            }
+        } else {
+            for row in 0...2 {
+                upperSide[row][0] = column_backSide.reversed()[row]
+                backSide[row][0] = column_bottomSide.reversed()[row]
+                bottomSide[row][0] = column_frontSide[row]
+                frontSide[row][0] = column_upperSide[row]
+            }
+        }
+    }
+    func lastElementOfEachRow(inputArray: Array<Array<String>>) -> Array<String> {
+        var temp: Array<String> {
+            var tempArray: Array<String> = []
+            for row in inputArray {
+                tempArray.append(row[2])
+            }
+            return tempArray
+        }
+        print(temp)
+        return temp
     }
     
-    func manipulateSurroundingSidesMinus90Degree(firstContiguousSide: Array<Array<String>>,
-                                    secondContiguousSide: Array<Array<String>>,
-                                    thirdContiguousSide: Array<Array<String>>,
-                                    fourthContiguousSide: Array<Array<String>>)
-    ->
-    (Array<Array<String>>,
-     Array<Array<String>>,
-     Array<Array<String>>,
-     Array<Array<String>>){
-        var firstSide = firstContiguousSide
-        var secondSide = secondContiguousSide
-        var thirdSide = thirdContiguousSide
-        var fourthSide = fourthContiguousSide
+    // R, R' pressed
+    mutating func columnRotationWhenRPressed(with instruction: String) {
+        let column_upperSide = lastElementOfEachRow(inputArray: upperSide)
+        let column_backSide = lastElementOfEachRow(inputArray: backSide)
+        let column_bottomSide = lastElementOfEachRow(inputArray: bottomSide)
+        let column_frontSide = lastElementOfEachRow(inputArray: frontSide)
         
-        return (firstSide, secondSide, thirdSide, fourthSide)
+        if instruction.contains("'") {
+            for row in 0...2 {
+                upperSide[row][2] = column_backSide.reversed()[row]
+                backSide[row][2] = column_bottomSide.reversed()[row]
+                bottomSide[row][2] = column_frontSide[row]
+                frontSide[row][2] = column_upperSide[row]
+            }
+        } else {
+            for row in 0...2 {
+                upperSide[row][2] = column_frontSide[row]
+                frontSide[row][2] = column_bottomSide[row]
+                bottomSide[row][2] = column_backSide.reversed()[row]
+                backSide[row][2] = column_upperSide.reversed()[row]
+            }
+        }
     }
     
-    mutating func manipulateCube(instruction: String) {
+    mutating func manipulateCube(with instruction: String) {
         switch instruction {
         case "U": do {
             upperSide = rotate90Degree(with: upperSide)
-            let rotatedSurroundingSides = manipulateSurroundingSides90Degree(firstContiguousSide: frontSide, secondContiguousSide: rightSide, thirdContiguousSide: backSide, fourthContiguousSide: leftSide)
-            frontSide = rotatedSurroundingSides.0
-            rightSide = rotatedSurroundingSides.1
-            backSide = rotatedSurroundingSides.2
-            leftSide = rotatedSurroundingSides.3
-        }
-        case "U'": do {
+            firstRowRotation(with: instruction)
+        } case "U'": do {
             upperSide = rotateMinus90Degree(with: upperSide)
+            firstRowRotation(with: instruction)
+        } case "B": do {
+            bottomSide = rotate90Degree(with: bottomSide)
+            lastRowRotation(with: instruction)
+        } case "B'": do {
+            bottomSide = rotateMinus90Degree(with: bottomSide)
+            lastRowRotation(with: instruction)
+        } case "L": do {
+            leftSide = rotate90Degree(with: leftSide)
+            columnRotationWhenLPressed(with: instruction)
+        } case "L'": do {
+            leftSide = rotateMinus90Degree(with: leftSide)
+            columnRotationWhenLPressed(with: instruction)
+        } case "R": do {
+            rightSide = rotate90Degree(with: rightSide)
+            columnRotationWhenRPressed(with: instruction)
+        } case "R'": do {
+            rightSide = rotateMinus90Degree(with: rightSide)
+            columnRotationWhenRPressed(with: instruction)
+        } case "F": do {
+            frontSide = rotate90Degree(with: frontSide)
+        } case "F'": do {
+            frontSide = rotateMinus90Degree(with: frontSide)
         }
+        
         default: return
         }
     }
@@ -135,13 +218,12 @@ struct RubiksCube {
                 continue
             } else if index != lastIndexofInputArray && inputArray[index + 1] == "'" {
                     validValue = "\(value)'"
-                    manipulateCube(instruction: String(validValue))
+                    manipulateCube(with: String(validValue))
                     print(validValue)
                     cubeOut()
-                
             } else {
                 validValue = "\(value)"
-                manipulateCube(instruction: String(validValue))
+                manipulateCube(with: String(validValue))
                 print(validValue)
                 cubeOut()
             }
